@@ -18,7 +18,7 @@ void main()
   scanf("%f",&kva);
   printf("enter  voc ioc woc :");
   scanf( "%f %f %f",&voc,&ioc,&woc);
-  printf("enter isc vsc isc wsc :"); 
+  printf("enter  vsc isc wsc :"); 
   scanf("%f %f %f",&vsc,&isc,&wsc);
   //oc calc
   woc/=2.0;
