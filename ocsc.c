@@ -9,7 +9,7 @@ void main()
 { // float voc=230.0,ioc=0.74,woc=146,roc,xoc,cosphi,sinphi,effi,pi,pc;
  // float vsc=148,isc=6.8,wsc=440,zsc,xsc,rsc,kva=3000.0;
   int i=0,j=0;
-  float voc,ioc,woc,roc,xoc,cosphi,sinphi,effi,pi,pc;//for oc test
+  float voc,ioc,woc,roc,xoc,cosphi,sinphi,effi,pi,pc,iw,im;//for oc test
   float vsc,isc,wsc,zsc,xsc,rsc,kva=3000.0;//for sc test
 
   float pf[4]={1.0,0.8,0.6,0.4};
@@ -23,12 +23,13 @@ void main()
   //oc calc
   woc/=2.0;
   wsc/=2.0;
-  cosphi=(woc/(voc*ioc));
+  cosphi=(woc/(voc*(ioc/2.0)));
   sinphi=sin(acos(cosphi));
-  roc=(voc/(ioc*cosphi));
-  xoc=(voc/(ioc*sinphi)); 
-  pi=(roc*ioc*ioc); 
-  pc=(xoc*ioc*ioc);
+  iw=ioc*cosphi;im=ioc*sinphi;
+  roc=(voc/iw);
+  xoc=(voc/im); 
+  pi=(roc*iw*iw); 
+  pc=(xoc*im*im);
   //sc calc
   rsc=wsc/(isc*isc);
   zsc=vsc/isc;
@@ -41,7 +42,7 @@ void main()
  	    regufunction(load[i],isc,rsc,pf[j],xsc,vsc);
            }
    }
-printf("\n\n\nRoc=%f Xoc=%f Pi=%f Pc=%f",roc,xoc,pi,pc);
+printf("\n\n\nRoc=%f Xoc=%f iw=%f im=%f Pi=%f Pc=%f",roc,xoc,iw,im,pi,pc);
 printf("\nRsc=%f Zsc=%f Xsc=%f\n",rsc,zsc,xsc);
 }
 
@@ -56,7 +57,7 @@ void effifunction(float X,float PI,float PC,float PF,float KVA)
 void regufunction(float X,float ISC,float RSC,float PF,float XSC,float VSC)
 {	float regu; //lagging
    	regu=X*100.0*((ISC*RSC*PF)+(ISC*XSC*sin(acos(PF))))/VSC;
-        if(X!=1.0)
+        if(PF!=1.0)
         {	printf("\nRegulation=%f (lagging )",regu);
         	//leading
 		regu=X*100.0*((ISC*RSC*PF)-(ISC*XSC*sin(acos(PF))))/VSC;
@@ -66,5 +67,4 @@ void regufunction(float X,float ISC,float RSC,float PF,float XSC,float VSC)
 		printf("\nRegulation=%f",regu);  
 		}      	
   }
-
 
