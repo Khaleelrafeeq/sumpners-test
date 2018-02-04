@@ -3,11 +3,13 @@
 
 float effifunction(float X,float PI,float PC,float PF,float KVA);
 void regufunction(float X,float ISC,float RSC,float PF,float XSC,float VSC);
+void GNUPLOT();
+
 
 void main()
 { // float voc=230.0,ioc=0.74,woc=146,roc,xoc,cosphi,sinphi,effi,pi,pc;
   // float vsc=148,isc=6.8,wsc=440,zsc,xsc,rsc,kva=3000.0;
-  int i=0,j=0;
+  int i=0,j=0;char plotchk='n';
   float voc,ioc,woc,roc,xoc,cosphi,sinphi,effi,pi,pc,iw,im;//for oc test
   float vsc,isc,wsc,zsc,xsc,rsc,kva=3000.0;//for sc test
   float pf[5]={1.0,0.8,0.6,0.4,0.2};
@@ -52,7 +54,7 @@ void main()
              {printf("\n \t PF=%f",pf[j]);
 	      effi=effifunction(load[i],pi,pc,pf[j],kva);
               printf("\tEfficiency=%f ",effi);
-	      //      regufunction(load[i],isc,rsc,pf[j],xsc,vsc);
+	            regufunction(load[i],isc,rsc,pf[j],xsc,vsc);
                }
             }
      
@@ -63,11 +65,11 @@ void main()
         }
        
       
-
-/////////////////////////////////////////////////////////////////plotfile
-           int plot;float pload=0.0,powerfactor=0.0;
-           printf("\n Plot ?:");scanf("%d",&plot);
-           if (1)
+  printf("\n Plot ?(y/n):");scanf(" %c",&plotchk);
+/////////////////////////////////////////////////////////////////plotdatafile
+           float pload=0.0,powerfactor=0.0;
+           
+           if (plotchk=='y'|| plotchk=='Y')
            {
                  FILE *fp;
                  fp=fopen("data.txt","w");
@@ -83,25 +85,40 @@ void main()
                  	       
                  }
           
-               fclose(fp);  
-
+               fclose(fp);     ///closing data file  
+             
+             GNUPLOT();           // calling gnuplot
             }
 
-//////////////////////////piping to gnuplot
-FILE * gnupipe = popen ("gnuplot -persistent", "w");if(gnupipe==NULL) {printf("e2rror");}
-        fprintf(gnupipe,"plot \"data.txt\" using 1:2 title 'upf'with lines ,\"data.txt\" using 1:3 title '.8pf' with lines, \"data.txt\" using 1:4 title '.6'with lines ,\"data.txt\" using 1:5 title '.4pf' with lines,\"data.txt\" using 1:5 title '.2pf'with lines ");
-
-
-fflush(gnupipe);
-
-
-}//main closed
 
 
 
+           
+
+
+}
+//main closed
 
 
 
+////////////////////////////////////////////////
+///////////////////////////////////plot function
+void GNUPLOT ()
+{
+       FILE *output; ///filestream
+       output = popen ("gnuplot -persistant ", "w");///opening pipe
+
+       if (!output)
+       {fprintf (stderr,"incorrect parameters or too many files(pipefailed).\n");}
+
+     fprintf(output,"plot \"data.txt\" using 1:2 title 'upf' with lines,\"data.txt\" using 1:3 title '.8pf' with lines , \"data.txt\" using 1:4 title '.6'with lines ,\"data.txt\" using 1:5 title '.4pf' with lines,\"data.txt\" using 1:6 title '.2pf'with lines \n");
+ 
+       if (ferror (output))
+       {fprintf (stderr, "Output to stream failed.\n");}
+       if (pclose (output) != 0)              //closing pipe
+       { fprintf (stderr,"Could not run gnuplot or other error.\n");}
+
+}
 
 
 
