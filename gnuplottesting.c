@@ -111,8 +111,8 @@ void GNUPLOT ()
        if (!output)
        {fprintf (stderr,"incorrect parameters or too many files(pipefailed).\n");}
 
-     fprintf(output,"plot \"data.txt\" using 1:2 title 'upf' with lines,\"data.txt\" using 1:3 title '.8pf' with lines , \"data.txt\" using 1:4 title '.6'with lines ,\"data.txt\" using 1:5 title '.4pf' with lines,\"data.txt\" using 1:6 title '.2pf'with lines \n");
- 
+    fprintf(output,"set xlabel \"load\" ; set ylabel \"efficency\";plot \"data.txt\" using 1:2 title 'upf' with lines,\"data.txt\" using 1:3 title '.8pf' with lines , \"data.txt\" using 1:4 title '.6'with lines ,\"data.txt\" using 1:5 title '.4pf' with lines,\"data.txt\" using 1:6 title '.2pf'with lines \n");
+
        if (ferror (output))
        {fprintf (stderr, "Output to stream failed.\n");}
        if (pclose (output) != 0)              //closing pipe
