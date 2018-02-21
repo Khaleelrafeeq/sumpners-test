@@ -2,7 +2,7 @@
 #include<math.h>
 
 float effifunction(float X,float PI,float PC,float PF,float KVA);
-void regufunction(float X,float ISC,float RSC,float PF,float XSC,float VSC);
+void regufunction(float X,float ISC,float RSC,float PF,float XSC,float V02);
 void GNUPLOT();
 
 
@@ -11,7 +11,7 @@ void main()
   // float vsc=148,isc=6.8,wsc=440,zsc,xsc,rsc,kva=3000.0;
   int i=0,j=0;char plotchk='n';
   float voc,ioc,woc,roc,xoc,cosphi,sinphi,effi,pi,pc,iw,im;//for oc test
-  float vsc,isc,wsc,zsc,xsc,rsc,kva=3000.0;//for sc test
+  float vsc,isc,wsc,zsc,xsc,rsc,kva=3000.0,v02=440;//for sc test
   float pf[5]={1.0,0.8,0.6,0.4,0.2};
   float load[4]={1.0,0.75,0.5,0.25};
   
@@ -23,6 +23,8 @@ void main()
   scanf( "%f %f %f",&voc,&ioc,&woc);
   printf("enter  vsc isc wsc :"); 
   scanf("%f %f %f",&vsc,&isc,&wsc);
+  printf("Enter v02 of transformer:");
+  scanf("%f",&v02);
 
  //////////calculations/////////////////
   woc/=2.0;ioc/=2.0;  //for single transformer
@@ -54,7 +56,7 @@ void main()
              {printf("\n \t PF=%f",pf[j]);
 	      effi=effifunction(load[i],pi,pc,pf[j],kva);
               printf("\tEfficiency=%f ",effi);
-	            regufunction(load[i],isc,rsc,pf[j],xsc,vsc);
+	            regufunction(load[i],isc,rsc,pf[j],xsc,v02);
                }
             }
      
@@ -136,8 +138,8 @@ float effifunction(float X,float PI,float PC,float PF,float KVA)
 ///////////////////////////////////////////////////////////////////////////
 void regufunction(float X,float ISC,float RSC,float PF,float XSC,float VSC)
 {	float regulag,regulead; //lagging
-   	regulag=X*100.0*((ISC*RSC*PF)+(ISC*XSC*sin(acos(PF))))/VSC;
-        regulead=X*100.0*((ISC*RSC*PF)-(ISC*XSC*sin(acos(PF))))/VSC;    
+   	regulag=X*100.0*((ISC*RSC*PF)+(ISC*XSC*sin(acos(PF))))/V02;
+        regulead=X*100.0*((ISC*RSC*PF)-(ISC*XSC*sin(acos(PF))))/V02;    
        
          if(PF!=1.0)
         {	printf("\nRegulation=%f (lagging )",regulag);
